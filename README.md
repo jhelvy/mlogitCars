@@ -6,17 +6,17 @@ The `.R` files in this repository illustrate different examples. The following l
 
 |    File    |    Description    |
 |:-----------|:------------------|
-|`0-simulateData.R`       ||
-|`1-loadTools.R`          ||
-|`2.1-partworth_model.R`  ||
-|`2.2-partworth_plots.R`  ||
-|`3.1-linear_model.R`     ||
-|`3.2-linear_plots.R`     ||
-|`4.1-outsideGood_model.R`||
-|`4.2-outsideGood_plots.R`||
-|`5-uncertainty.R`        ||
-|`6-wtp.R`                ||
-|`7-market_simulation.R`  ||
+|`0-simulateData.R`       | Code to simulate the choice data.|
+|`1-loadTools.R`          | Various functions used throughout example.|
+|`2.1-partworth_model.R`  | Estimating a full partworth model using `mlogit`.|
+|`2.2-partworth_plots.R`  | Plotting the results of the partworth model.|
+|`3.1-linear_model.R`     | Estimating a full model with linear parameters using `mlogit`.||
+|`3.2-linear_plots.R`     | Plotting the results of the linear model.|
+|`4.1-outsideGood_model.R`| Estimating a model with an outside good using `mlogit`.||
+|`4.2-outsideGood_plots.R`| Plotting the results of the outside good model.|
+|`5-uncertainty.R`        | Using multivariate normal draws of the linear model coefficients to generate a 95% confidence interval of the coefficients.|
+|`6-wtp.R`                | Computing the willingness to pay from the linear model (both point estimates and 95% confidence intervals).|
+|`7-market_simulation.R`  | Computing the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares).|
 
 # Author, Version, and License Information
 - Author: *John Paul Helveston* (www.jhelvy.com)
