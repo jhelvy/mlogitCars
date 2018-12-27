@@ -1,4 +1,4 @@
-setwd('/Users/jhelvy/sync/00_current/EMSE 6035 - 2019 Spring/R/cars')
+setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
 
 # Install packages (only need to install once)
 # install.packages('tidyverse')
