@@ -4,7 +4,7 @@ setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
 source('./1-loadTools.R')
 
 # Load and run linear model:
-source('./3-linear.R')
+source('./3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market
@@ -13,7 +13,7 @@ source('./3-linear.R')
 # Attributes are price, fuelEconomy, accelTime, and powertrain_elec
 X = matrix(c(
     15,  20, 8, 0, # Each row is an alternative
-    30, 100, 6, 1,
+    30, 90, 6, 1,
     21,  40, 7, 0), ncol=4, byrow=T)
 
 # Get the model coefficients:

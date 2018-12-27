@@ -4,7 +4,7 @@ setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
 source('./1-loadTools.R')
 
 # Load and run linear model:
-source('./3-linear.R')
+source('./3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Compute the WTP implied from the preference space model

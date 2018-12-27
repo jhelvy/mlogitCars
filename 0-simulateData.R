@@ -62,7 +62,7 @@ getMnlLogit = function(V, obsID) {
 # Simulate data
 
 # Simulate experiments
-numObs  = 3000
+numObs  = 5000
 numAlts = 3
 data_mnl = simulateExperiment(
     atts = list(
@@ -78,9 +78,9 @@ data_outsideGood = addOutsideGood(data_mnl, numAlts, numObs)
 pars_mnl = c(
     price       = -0.7,
     fuelEconomy = 0.1,
-    accelTime   = -0.1,
+    accelTime   = -0.2,
     elec        = -4.0)
-pars_outsideGood        = c(pars_mnl, outsideGood = -3.0)
+pars_outsideGood = c(pars_mnl, outsideGood = -15.0)
 data_mnl$choice         = simulateChoices(data_mnl, pars_mnl)
 data_outsideGood$choice = simulateChoices(data_outsideGood, pars_outsideGood)
 
@@ -107,11 +107,6 @@ write.csv(data_outsideGood, './data/data_outsideGood.csv', row.names=F)
 # data       = dummyCode(data, varNames = 'powertrain')
 # data$elec  = data$powertrain_elec
 # pars       = pars_mnl
-# pars_mnl = c(
-#     price       = -0.7,
-#     fuelEconomy = 0.1,
-#     accelTime   = -0.1,
-#     elec        = -4.0)
 # X          = as.matrix(data[names(pars)])
 # data$V     = as.numeric(X %*% pars)
 # data$share = as.numeric(round(100*getMnlLogit(data$V, data$obsID), 2))
