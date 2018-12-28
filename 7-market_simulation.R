@@ -31,7 +31,7 @@ shares  = exp_v_j / denom
 
 # See 'simulateMarketShares' function in '1-loadTools.R' file for details
 shares = simulateMarketShares(model_linear, X, numDraws=10^4)
-
+shares
 # -----------------------------------------------------------------------------
 # Plot results
 
