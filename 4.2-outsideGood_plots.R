@@ -71,6 +71,5 @@ plot_outsideGood = ggplot(data=df_outsideGood, aes(x=levels, y=utility)) +
     theme_bw()
 
 # Plot all plots in one figure
-ggmultiplot(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
-    plot_outsideGood, cols=5)
-
+grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
+    plot_outsideGood, nrow=1)

@@ -88,6 +88,6 @@ plot_powertrain = ggplot(data=df_powertrain, aes(x=levels, y=mean)) +
     theme_bw()
 
 # Plot all plots in one figure
-ggmultiplot(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
-    cols=4)
+grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
+    nrow=1)
 
