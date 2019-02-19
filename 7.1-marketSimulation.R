@@ -30,6 +30,11 @@ shares
 # -----------------------------------------------------------------------------
 # Compute the market shares with uncertainty
 
+# The 'simulateMarketShares' function takes draws of the estimated model
+# coefficients using the hessian at the solution. It then computes the market
+# shares with each set of draws and returns a mean result with a lower and
+# upper bound from a 95% confidence interval.
+#
 # See 'simulateMarketShares' function in '1-loadTools.R' file for details
 shares = simulateMarketShares(model_linear, X, numDraws=10^4)
 shares

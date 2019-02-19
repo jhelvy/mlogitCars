@@ -21,7 +21,7 @@ as.matrix(wtp)
 # Compute the WTP with uncertainty
 
 # Generate draws of coefficients:
-coef_draws = getUncertaintyDraws(model_linear, numDraws = 10^4)
+coef_draws = getCoefDraws(model_linear, numDraws = 10^4)
 head(coef_draws)
 
 # Compute WTP for each coefficient draw:

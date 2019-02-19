@@ -4,7 +4,7 @@ setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
 source('./1-loadTools.R')
 
 # Load the market simulation results:
-source('./7.1-market_simulation.R')
+source('./7.1-marketSimulation.R')
 
 # -----------------------------------------------------------------------------
 # Plot results

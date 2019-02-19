@@ -21,31 +21,31 @@ options(dplyr.width = Inf)
 # -----------------------------------------------------------------------------
 # Functions for preparing the data
 
-dummyCode = function(data, varNames) {
+dummyCode = function(df, varNames) {
     # Keep the original variables and the order to restore later after merging
-    data$order = seq(nrow(data))
+    df$order = seq(nrow(df))
     for (i in 1:length(varNames)) {
         varName  = varNames[i]
-        colIndex = which(colnames(data) == varName)
-        levels   = sort(unique(data[,colIndex]))
+        colIndex = which(colnames(df) == varName)
+        levels   = sort(unique(df[,colIndex]))
         mergeMat = as.data.frame(diag(length(levels)))
         mergeMat = cbind(levels, mergeMat)
         colnames(mergeMat) = c(varName, paste(varName, levels, sep='_'))
-        data = merge(data, mergeMat)
+        df = merge(df, mergeMat)
     }
     # Restore the original order
-    data = data[order(data$order),]
-    row.names(data) = data$order
-    data$order <- NULL
-    return(data)
+    df = df[order(df$order),]
+    row.names(df) = df$order
+    df$order <- NULL
+    return(df)
 }
 
 # -----------------------------------------------------------------------------
-# Functions for uncertainty
+# Functions for dealing with parameter uncertainty
 
-# Returns multivariate normal draws of the coefficients of an estimated mlogit
-# model
-getUncertaintyDraws = function(model, numDraws) {
+# Returns multivariate normal draws of the coefficients of a model estimated
+# using the mlogit package
+getCoefDraws = function(model, numDraws) {
     varcov = abs(solve(as.matrix(model$hessian)))
     draws  = data.frame(mvrnorm(numDraws, model$coef, varcov))
     return(draws)
@@ -64,7 +64,7 @@ getCI = function(values, alpha=0.025) {
 # using multivariate normal draws of the coefficients of an estimated mlogit
 # model
 simulateMarketShares = function(model, market, numDraws, alpha=0.025) {
-    coef_draws       = getUncertaintyDraws(model, numDraws)
+    coef_draws       = getCoefDraws(model, numDraws)
     v_j_draws        = market %*% t(coef_draws)
     exp_v_j_draws    = exp(v_j_draws)
     share_draws      = apply(exp_v_j_draws, 2, function(x) {x / sum(x)})
