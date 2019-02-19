@@ -15,8 +15,11 @@ The `.R` files in this repository illustrate different examples. The following l
 |`4.1-outsideGood_model.R`| Estimate a logit model with an outside good using `mlogit`.||
 |`4.2-outsideGood_plots.R`| Plot the results of the outside good model using `ggplot2`.|
 |`5-uncertainty.R`        | Use the `MASS` library to take multivariate normal draws of the linear model coefficients and generate a 95% confidence interval of the coefficients.|
-|`6-wtp.R`                | Compute the willingness to pay from the linear model (both point estimates and a 95% confidence interval using simulation).|
-|`7-market_simulation.R`  | Compute the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares using simulation).|
+
+|`6.1-wtp.R`                | Compute the willingness to pay from the linear model (both point estimates and a 95% confidence interval using simulation).|
+|`6.2-wtp_plots.R`| Plot the WTP results using `ggplot2`.|
+|`7.1-market_simulation.R`  | Compute the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares using simulation).|
+|`7.2-wtp_plots.R`| Plot the market simulation results using `ggplot2`.|
 
 # Author, Version, and License Information
 - Author: *John Paul Helveston* (www.jhelvy.com)
