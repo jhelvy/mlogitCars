@@ -59,17 +59,3 @@ getCI = function(values, alpha=0.025) {
     result = c(mean=mean, lower=lower, upper=upper)
     return(result)
 }
-
-# Returns the expected market shares with uncertainty of a market (as a matrix)
-# using multivariate normal draws of the coefficients of an estimated mlogit
-# model
-simulateMarketShares = function(model, market, numDraws, alpha=0.025) {
-    coef_draws       = getCoefDraws(model, numDraws)
-    v_j_draws        = market %*% t(coef_draws)
-    exp_v_j_draws    = exp(v_j_draws)
-    share_draws      = apply(exp_v_j_draws, 2, function(x) {x / sum(x)})
-    result           = t(apply(share_draws, 1, function(x) {getCI(x, alpha)}))
-    result           = as.data.frame(result)
-    colnames(result) = c('mean', 'lower', 'upper')
-    return(result)
-}

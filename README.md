@@ -19,7 +19,9 @@ The `.R` files in this repository illustrate different examples. The following l
 |`6.1-wtp.R`                | Compute the willingness to pay from the linear model (both point estimates and a 95% confidence interval using simulation).|
 |`6.2-wtp_plots.R`| Plot the WTP results using `ggplot2`.|
 |`7.1-market_simulation.R`  | Compute the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares using simulation).|
-|`7.2-wtp_plots.R`| Plot the market simulation results using `ggplot2`.|
+|`7.2-marketSimulation_plots.R`| Plot the market simulation results using `ggplot2`.|
+|`7.3-marketSimulation_sensitivity.R`| Sensitivity analysis of the market simulations.|
+|`7.4-marketSimulation_sensitivity_plots.R`| Make a 'tornado plot' of the market simulation sensitivity analysis using `ggplot2`.|
 
 # Author, Version, and License Information
 - Author: *John Paul Helveston* (www.jhelvy.com)
