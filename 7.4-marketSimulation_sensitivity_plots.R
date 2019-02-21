@@ -22,19 +22,23 @@ cases = cases %>%
     group_by(var) %>%
     mutate(shareRange = sum(abs(share)))
 
+# Compute labels for market share
+lb        = floor(10*min(cases$share))/10
+ub        = ceiling(10*max(cases$share))/10
+breaks    = seq(lb, ub, (ub - lb) / 5)
+breakLabs = round(breaks + baselineShare, 2)
+
 # Make the tornado diagram
 ggplot(cases,
     # Use 'fct_reorder' to order the variables according to shareRange
     aes(x=fct_reorder(var, shareRange), y=share, fill=level)) +
-    geom_bar(position='identity', stat='identity', width=0.6) +
+    geom_bar(stat='identity', width=0.6) +
     # Add labels on bars
     geom_text(aes(label=val), vjust=0.5) +
-    # Manually set the axis for market share
-    scale_y_continuous(limits=c(-0.8, 0.2), breaks=seq(-0.8, 0.2, 0.2)) +
+    scale_y_continuous(limits=c(lb, ub), breaks=breaks, labels=breakLabs) +
     labs(x='Attribute',
          y='Market Share') +
     theme_bw() +
     # Remove legend
     theme(legend.position='none') +
     coord_flip()
-
