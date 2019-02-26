@@ -15,7 +15,8 @@ The `.R` files in the `./code` folder illustrate different examples of models, p
 |    File       |    Description    |
 |:-----------------|:------------------|
 |`0-simulateData.R`       | Simulate the choice data.|
-|`1-loadTools.R`          | Load functions & libraries.|
+|`1.1-loadTools.R`        | Load functions & libraries.|
+|`1.2-exploreData.R`      | Explore the data with summaries and plots.|
 |`2.1-partworth_model.R`  | Estimate a logit model with partworth parameters using `mlogit`.|
 |`2.2-partworth_plots.R`  | Plot the results of the partworth model using `ggplot2`.|
 |`3.1-linear_model.R`     | Estimate a logit model with linear parameters using `mlogit`.||

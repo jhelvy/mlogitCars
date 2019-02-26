@@ -1,8 +1,8 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load and run linear model:
-source('./3.1-linear_model.R')
+source('./code/3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market
@@ -25,7 +25,7 @@ logitProbs = function(market, coefs) {
     v     = as.matrix(market) %*% coefs
     expV  = exp(v)
     denom = sum(expV)
-    probs = expV / denom
+    probs = as.vector(expV / denom)
     return(probs)
 }
 
@@ -47,9 +47,7 @@ simulateMarketShares = function(model, market, numDraws, alpha=0.025) {
     v_draws     = as.matrix(market) %*% t(coef_draws)
     expV_draws  = exp(v_draws)
     share_draws = apply(expV_draws, 2, function(x) {x / sum(x)})
-    result      = t(apply(share_draws, 1, function(x) {getCI(x, alpha)}))
-    result      = as.data.frame(result)
-    colnames(result) = c('mean', 'lower', 'upper')
+    result      = getCI(t(share_draws))
     return(result)
 }
 

@@ -5,10 +5,10 @@
 # install.packages('mlogit')
 
 # Load installed libraries - do this every time!
-library(tidyverse)
-library(gridExtra)
-library(mlogit)
 library(MASS)
+library(gridExtra)
+library(tidyverse)
+library(mlogit)
 
 # -----------------------------------------------------------------------------
 # Settings
@@ -20,6 +20,8 @@ options(dplyr.width = Inf)
 # Functions for preparing the data
 
 dummyCode = function(df, varNames) {
+    df = as.data.frame(df)
+    nonVarNames = colnames(df)[which(! colnames(df) %in% varNames)]
     # Keep the original variables and the order to restore later after merging
     df$order = seq(nrow(df))
     for (i in 1:length(varNames)) {
@@ -31,7 +33,10 @@ dummyCode = function(df, varNames) {
         colnames(mergeMat) = c(varName, paste(varName, levels, sep='_'))
         df = merge(df, mergeMat)
     }
-    # Restore the original order
+    # Restore the original column order
+    new = colnames(df)[which(! colnames(df) %in% c(varNames, nonVarNames))]
+    df = df[c(nonVarNames, varNames, new)]
+    # Restore the original row order
     df = df[order(df$order),]
     row.names(df) = df$order
     df$order <- NULL
@@ -50,10 +55,13 @@ getCoefDraws = function(model, numDraws) {
 }
 
 # Returns a confidence interval from a vector of values
-getCI = function(values, alpha=0.025) {
-    mean   = mean(values, na.rm=T)
-    lower  = quantile(values, alpha, na.rm=T)
-    upper  = quantile(values, 1-alpha, na.rm=T)
-    result = c(mean=mean, lower=lower, upper=upper)
-    return(result)
+getCI = function(df, alpha=0.025) {
+    df = data.frame(
+        mean  = apply(df, 2, mean, na.rm=T), 
+        lower = apply(df, 2, function(x) {quantile(x, alpha, na.rm=T)}), 
+        upper = apply(df, 2, function(x) {quantile(x, 1-alpha, na.rm=T)}))
+    # df$par = row.names(df)
+    # row.names(df) = seq(nrow(df))
+    # return(df[c('par', 'mean', 'lower', 'upper')])
+    return(df)
 }

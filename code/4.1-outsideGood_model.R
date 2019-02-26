@@ -1,30 +1,31 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data = read.csv('./data/data_outsideGood.csv', header=T)
+data = read_csv('./data/data_outsideGood.csv')
 
 # Variables:
+# "respID"      = Identifies each unique survey respondent
 # "obsID"       = Identifies each unique choice observation
-# "alt"         = The alternative, denoted by 1 or 2
+# "alt"         = Identifies the alternative in each unique choice observation
 # "choice"      = 1 if the alternative is chosen, 0 otherwise
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
-# "fuelEconomy" = Fuel economy in mpg (20, 25, 30)
-# "accelTime"   = Zero to 60mph acceleration time in second (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric vs. gas ("gas", "elec")
-# "outsideGood" = Identifies the outsideGood
+# "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
+# "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
+# "powertrain"  = Indicates if the car is electric or gas ("gas", "elec")
+# "outsideGood" = Identifies the outside good option (0 or 1)
 
 # Create dummy coded variables
-data_coded = dummyCode(data, varNames = c('powertrain'))
-head(data_coded)
+data_dummy = dummyCode(data, varNames = 'powertrain')
+head(data_dummy)
 
 # -----------------------------------------------------------------------------
 # Estimate MNL linear model:
 
 # Convert the data to "mlogit" format:
 data_mlogit = mlogit.data(
-    data    = data_coded,
+    data    = data_dummy,
     shape   = 'long',
     choice  = 'choice',
     alt.var = 'alt')

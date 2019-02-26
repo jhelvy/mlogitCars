@@ -1,69 +1,75 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load and run linear model:
-source('./5.1-uncertainty.R')
+source('./code/5.1-uncertainty.R')
 
 # -----------------------------------------------------------------------------
 # Plot results
 
-# Create data frames for plotting each attribute
-# X is the attribute level
-# Y is the utility associated with each level:
-levels_price       = c(15, 20, 25)
-levels_fuelEconomy = c(25, 30, 35)
-levels_accelTime   = c(6, 7, 8)
-levels_powertrain  = c(0, 1)
-df_price = data.frame(
-    levels = levels_price,
-    mean   = (levels_price - 15) * coef_price[1],
-    lower  = (levels_price - 15) * coef_price[2],
-    upper  = (levels_price - 15) * coef_price[3])
-df_fuelEconomy = data.frame(
-    levels = levels_fuelEconomy,
-    mean   = (levels_fuelEconomy - 25) * coef_fuelEconomy[1],
-    lower  = (levels_fuelEconomy - 25) * coef_fuelEconomy[2],
-    upper  = (levels_fuelEconomy - 25) * coef_fuelEconomy[3])
-df_accelTime = data.frame(
-    levels = levels_accelTime,
-    mean   = (levels_accelTime - 6) * coef_accelTime[1],
-    lower  = (levels_accelTime - 6) * coef_accelTime[2],
-    upper  = (levels_accelTime - 6) * coef_accelTime[3])
-df_powertrain = data.frame(
-    levels = levels_powertrain,
-    mean   = (levels_powertrain - 0) * coef_powertrain[1],
-    lower  = (levels_powertrain - 0) * coef_powertrain[2],
-    upper  = (levels_powertrain - 0) * coef_powertrain[3])
+# Create data frames for plotting each attribute:
+#   level   = The attribute level (x-axis)
+#   utility = The utility associated with each level (y-axis)
+coef$par         = row.names(coef)
+coef_price       = coef %>% filter(par == 'price')
+coef_fuelEconomy = coef %>% filter(par == 'fuelEconomy')
+coef_accelTime   = coef %>% filter(par == 'accelTime')
+coef_powertrain  = coef %>% filter(par == 'powertrain_elec')
+df_price = data %>%
+    distinct(level = price) %>%
+    arrange(level) %>%
+    mutate(mean  = (level - min(level)) * coef_price$mean,
+           lower = (level - min(level)) * coef_price$lower,
+           upper = (level - min(level)) * coef_price$upper)
+df_fuelEconomy = data %>%
+    distinct(level = fuelEconomy) %>%
+    arrange(level) %>%
+    mutate(mean  = (level - min(level)) * coef_fuelEconomy$mean,
+           lower = (level - min(level)) * coef_fuelEconomy$lower,
+           upper = (level - min(level)) * coef_fuelEconomy$upper)
+df_accelTime = data %>%
+    distinct(level = accelTime) %>%
+    arrange(level) %>%
+    mutate(mean  = (level - min(level)) * coef_accelTime$mean,
+           lower = (level - min(level)) * coef_accelTime$lower,
+           upper = (level - min(level)) * coef_accelTime$upper)
+df_powertrain = data %>%
+    distinct(level = powertrain) %>%
+    mutate(mean  = c(coef_powertrain$mean, 0),
+           lower = c(coef_powertrain$lower, 0),
+           upper = c(coef_powertrain$upper, 0))
 
 # Get y-axis upper and lower bounds (plots should have the same y-axis):
-df   = rbind(df_price, df_fuelEconomy, df_accelTime, df_powertrain)
-ymin = min(df$lower)
-ymax = max(df$upper)
+ymin = min(c(df_price$lower, df_fuelEconomy$lower, df_accelTime$lower, 
+             df_powertrain$lower))
+ymax = max(c(df_price$upper, df_fuelEconomy$upper, df_accelTime$upper, 
+             df_powertrain$upper))
 
 # Plot utility for each attribute with error bars for a 95% confidence interval
-plot_price = ggplot(data=df_price,
-    aes(x=levels, y=mean, ymin=lower, ymax=upper)) +
+plot_price = ggplot(df_price,
+    aes(x=level, y=mean, ymin=lower, ymax=upper)) +
     geom_line() + # Adds the trend line
     geom_ribbon(alpha=0.2) + # Adds the uncertainty band
     # Set alpha between 0 and 1 for transparency level
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Price ($1000)', y='Utility') +
     theme_bw()
-plot_fuelEconomy = ggplot(data=df_fuelEconomy,
-    aes(x=levels, y=mean, ymin=lower, ymax=upper)) +
+plot_fuelEconomy = ggplot(df_fuelEconomy,
+    aes(x=level, y=mean, ymin=lower, ymax=upper)) +
     geom_line() +
     geom_ribbon(alpha=0.2) +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Fuel Economy (mpg)', y='Utility') +
     theme_bw()
-plot_accelTime = ggplot(data=df_accelTime,
-    aes(x=levels, y=mean, ymin=lower, ymax=upper)) +
+plot_accelTime = ggplot(df_accelTime,
+    aes(x=level, y=mean, ymin=lower, ymax=upper)) +
     geom_line() +
     geom_ribbon(alpha=0.2) +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='0-60mph Accel. Time (sec)', y='Utility') +
     theme_bw()
-plot_powertrain = ggplot(data=df_powertrain, aes(x=levels, y=mean)) +
+plot_powertrain = ggplot(df_powertrain, 
+    aes(x=level, y=mean)) +
     geom_point() +
     geom_errorbar(aes(ymin=lower, ymax=upper), width=0.3) +
     scale_y_continuous(limits=c(ymin, ymax)) +

@@ -1,8 +1,8 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load and run linear model:
-source('./3.1-linear_model.R')
+source('./code/3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Compute the WTP implied from the preference space model
@@ -29,9 +29,5 @@ wtp_draws   = -1 * (coef_draws / price_draws)
 head(wtp_draws)
 
 # For each coefficient, get the mean and 95% confidence interval of WTP:
-wtp_fuelEconomy = getCI(wtp_draws$fuelEconomy)
-wtp_accelTime   = getCI(wtp_draws$accelTime)
-wtp_powertrain  = getCI(wtp_draws$powertrain)
-
-# Combine results
-wtp = as.data.frame(rbind(wtp_fuelEconomy, wtp_accelTime, wtp_powertrain))
+wtp = getCI(wtp_draws)
+wtp

@@ -1,8 +1,8 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load the market simulation sensitivity analysis results:
-source('./7.3-marketSimulation_sensitivity.R')
+source('./code/7.3-marketSimulation_sensitivity.R')
 
 # -----------------------------------------------------------------------------
 # Setup data for creating a tornado diagram

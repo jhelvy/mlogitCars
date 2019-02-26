@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Functions for simulating SP data
 
-simulateExperiment = function(atts, numObs, numAlts) {
+simulateExperiment = function(atts, numObs, numResp, numAlts) {
     # Generate the full factorial design
     fullFactorial = expand.grid(atts)
     numIDs        = nrow(fullFactorial)
@@ -9,11 +9,26 @@ simulateExperiment = function(atts, numObs, numAlts) {
     # repeating the same choice alternative in any one choice set
     ids  = replicate(numObs, sample(seq(numIDs), numAlts, replace=F))
     data = fullFactorial[as.vector(ids), ]
-    data = addMetaData(data, numAlts, numObs)
+    data = addMetaData(data, numObs, numResp, numAlts)
     return(data)
 }
 
-addOutsideGood = function(data, numAlts, numObs) {
+addMetaData = function(data, numObs, numResp, numAlts) {
+    varNames    = colnames(data)
+    varNames    = varNames[which(! varNames %in% c('respID', 'obsID', 'alt'))]
+    numQ        = numObs / numResp
+    data$respID = rep(seq(1, numResp), each=numQ*numAlts)
+    data$obsID  = rep(seq(1, numObs), each=numAlts)
+    data$alt    = rep(seq(1, numAlts), numObs)
+    row.names(data) = seq(nrow(data))
+    data = data[c('respID', 'obsID', 'alt', varNames)]
+    return(data)
+}
+
+addOutsideGood = function(data) {
+    numObs  = max(data$obsID)
+    numResp = max(data$respID)
+    numAlts = max(data$alt)
     data_outsideGood = 0*data[1:numObs,]
     data_outsideGood$outsideGood = 1
     data$outsideGood = 0
@@ -22,18 +37,8 @@ addOutsideGood = function(data, numAlts, numObs) {
     data       = rbind(data, data_outsideGood)
     data       = data[order(data$order),]
     numAlts    = numAlts + 1
-    data       = addMetaData(data, numAlts, numObs)
+    data       = addMetaData(data, numObs, numResp, numAlts)
     data$order <- NULL
-    return(data)
-}
-
-addMetaData = function(data, numAlts, numObs) {
-    varNames = colnames(data)
-    varNames = varNames[which(! varNames %in% c('alt', 'obsID'))]
-    data$alt   = rep(seq(1, numAlts), numObs)
-    data$obsID = rep(seq(1, numObs), each=numAlts)
-    row.names(data) = seq(nrow(data))
-    data = data[c('obsID', 'alt', varNames)]
     return(data)
 }
 
@@ -60,17 +65,16 @@ getMnlLogit = function(V, obsID) {
 # Simulate data
 
 # Simulate experiments
-numObs  = 5000
-numAlts = 3
 data_mnl = simulateExperiment(
     atts = list(
         price       = c(15, 20, 25),
         fuelEconomy = c(20, 25, 30),
         accelTime   = c(6, 7, 8),
         elec        = c(0, 1)),
-    numObs  = numObs,
-    numAlts = numAlts)
-data_outsideGood = addOutsideGood(data_mnl, numAlts, numObs)
+    numObs  = 5000,
+    numResp = 500,  # 10 questions per respondent
+    numAlts = 3)
+data_outsideGood = addOutsideGood(data_mnl)
 
 # Simulate choices
 pars_mnl = c(
@@ -78,23 +82,21 @@ pars_mnl = c(
     fuelEconomy = 0.1,
     accelTime   = -0.2,
     elec        = -4.0)
-pars_outsideGood = c(pars_mnl, outsideGood = -15.0)
+pars_outsideGood        = c(pars_mnl, outsideGood = -15.0)
 data_mnl$choice         = simulateChoices(data_mnl, pars_mnl)
 data_outsideGood$choice = simulateChoices(data_outsideGood, pars_outsideGood)
 
-# Format powertrain variable and save
+# Format powertrain variable
 data_mnl$powertrain         = ifelse(data_mnl$elec == 1, 'elec', 'gas')
-data_outsideGood$powertrain = ifelse(data_outsideGood$elec == 1,
-    'elec', 'gas')
-varNames = c('obsID', 'alt', 'choice', 'price', 'fuelEconomy', 'accelTime',
-    'powertrain')
+data_outsideGood$powertrain = ifelse(data_outsideGood$elec == 1, 'elec', 'gas')
+
+varNames = c('respID', 'obsID', 'alt', 'choice', 'price', 'fuelEconomy',
+             'accelTime', 'powertrain')
+
 data_mnl         = data_mnl[varNames]
 data_outsideGood = data_outsideGood[c(varNames, 'outsideGood')]
 write.csv(data_mnl, './data/data_mnl.csv', row.names=F)
 write.csv(data_outsideGood, './data/data_outsideGood.csv', row.names=F)
-
-
-
 
 # # -----------------------------------------------------------------------------
 # # Preview predicted shares based on data and parameters:

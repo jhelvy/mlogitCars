@@ -1,8 +1,8 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load and run linear model:
-source('./3.1-linear_model.R')
+source('./code/3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Plot results
@@ -11,48 +11,52 @@ source('./3.1-linear_model.R')
 coefs = coef(model_linear)
 coefs
 
-# Create data frames for plotting each attribute
-# X is the attribute level
-# Y is the utility associated with each level:
-levels_price       = c(15, 20, 25)
-levels_fuelEconomy = c(25, 30, 35)
-levels_accelTime   = c(6, 7, 8)
-levels_powertrain  = c(0, 1)
-df_price = data.frame(
-    levels  = levels_price,
-    utility = (levels_price - 15) * coefs['price'])
-df_fuelEconomy = data.frame(
-    levels  = levels_fuelEconomy,
-    utility = (levels_fuelEconomy - 25) * coefs['fuelEconomy'])
-df_accelTime = data.frame(
-    levels  = levels_accelTime,
-    utility = (levels_accelTime - 6) * coefs['accelTime'])
-df_powertrain = data.frame(
-    levels  = levels_powertrain,
-    utility = (levels_powertrain - 0) * coefs['powertrain_elec'])
+# Create data frames for plotting each attribute:
+#   level   = The attribute level (x-axis)
+#   utility = The utility associated with each level (y-axis)
+df_price = data %>%
+    distinct(level = price) %>%
+    arrange(level) %>%
+    mutate(utility = (level - min(level)) * coefs['price'])
+df_fuelEconomy = data %>%
+    distinct(level = fuelEconomy) %>%
+    arrange(level) %>%
+    mutate(utility = (level - min(level)) * coefs['fuelEconomy'])
+df_accelTime = data %>%
+    distinct(level = accelTime) %>%
+    arrange(level) %>%
+    mutate(utility = (level - min(level)) * coefs['accelTime'])
+df_powertrain = data %>%
+    distinct(level = powertrain) %>%
+    mutate(utility = c(coefs['powertrain_elec'], 0))
 
 # Get y-axis upper and lower bounds (plots should have the same y-axis):
-df   = rbind(df_price, df_fuelEconomy, df_accelTime, df_powertrain)
-ymin = min(df$utility)
-ymax = max(df$utility)
+utility = c(df_price$utility, df_fuelEconomy$utility, df_accelTime$utility, 
+            df_powertrain$utility) 
+ymin = min(utility)
+ymax = max(utility)
 
 # Plot the utility for each attribute
-plot_price = ggplot(data=df_price, aes(x=levels, y=utility)) +
+plot_price = ggplot(df_price,
+    aes(x=level, y=utility)) +
     geom_line() +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Price ($1000)', y='Utility') +
     theme_bw()
-plot_fuelEconomy = ggplot(data=df_fuelEconomy, aes(x=levels, y=utility)) +
+plot_fuelEconomy = ggplot(df_fuelEconomy,
+    aes(x=level, y=utility)) +
     geom_line() +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Fuel Economy (mpg)', y='Utility') +
     theme_bw()
-plot_accelTime = ggplot(data=df_accelTime, aes(x=levels, y=utility)) +
+plot_accelTime = ggplot(df_accelTime,
+    aes(x=level, y=utility)) +
     geom_line() +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='0-60mph Accel. Time (sec)', y='Utility') +
     theme_bw()
-plot_powertrain = ggplot(data=df_powertrain, aes(x=levels, y=utility)) +
+plot_powertrain = ggplot(df_powertrain,
+    aes(x=level, y=utility)) +
     geom_point() +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Powertrain Electric', y='Utility') +

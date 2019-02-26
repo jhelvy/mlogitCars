@@ -1,8 +1,8 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load the market simulation results:
-source('./7.1-marketSimulation.R')
+source('./code/7.1-marketSimulation.R')
 
 # -----------------------------------------------------------------------------
 # Plot results

@@ -1,31 +1,32 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # -----------------------------------------------------------------------------
 # Load the data set:
-data = read.csv('./data/data_mnl.csv')
+data = read_csv('./data/data_mnl.csv')
 head(data)
 
 # Variables:
+# "respID"      = Identifies each unique survey respondent
 # "obsID"       = Identifies each unique choice observation
-# "alt"         = The alternative, denoted by 1 or 2
+# "alt"         = Identifies the alternative in each unique choice observation
 # "choice"      = 1 if the alternative is chosen, 0 otherwise
 # "price"       = Purchase price in thousands of dollars (15, 20, 25)
-# "fuelEconomy" = Fuel economy in mpg (20, 25, 30)
-# "accelTime"   = Zero to 60mph acceleration time in second (6, 7, 8)
-# "powertrain"  = Indicates if the car is electric vs. gas ("gas", "elec")
+# "fuelEconomy" = Fuel economy in miles per gallon of gasoline (20, 25, 30)
+# "accelTime"   = 0 to 60 mph acceleration time in seconds (6, 7, 8)
+# "powertrain"  = Indicates if the car is electric or gas ("gas", "elec")
 
 # Create dummy coded variables
-data_coded = dummyCode(data,
+data_dummy = dummyCode(data,
     varNames = c('price', 'fuelEconomy', 'accelTime', 'powertrain'))
-head(data_coded)
+head(data_dummy)
 
 # -----------------------------------------------------------------------------
 # Estimate MNL partworth model:
 
 # Convert the data to "mlogit" format:
 data_mlogit = mlogit.data(
-    data    = data_coded,
+    data    = data_dummy,
     shape   = 'long',
     choice  = 'choice',
     alt.var = 'alt')

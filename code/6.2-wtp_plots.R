@@ -1,56 +1,58 @@
 # Load libraries and functions
-source('./1-loadTools.R')
+source('./code/1.1-loadTools.R')
 
 # Load and WTP results:
-source('./6.1-wtp.R')
+source('./code/6.1-wtp.R')
 
 # -----------------------------------------------------------------------------
 # Plot results
 
-# Create data frames for plotting each attribute
-# X is the attribute level
-# Y is the utility associated with each level:
-levels_fuelEconomy = c(25, 30, 35)
-levels_accelTime   = c(6, 7, 8)
-levels_powertrain  = c(0, 1)
-df_fuelEconomy = data.frame(
-    levels = levels_fuelEconomy,
-    mean   = (levels_fuelEconomy - 25) * wtp_fuelEconomy[1],
-    lower  = (levels_fuelEconomy - 25) * wtp_fuelEconomy[2],
-    upper  = (levels_fuelEconomy - 25) * wtp_fuelEconomy[3])
-df_accelTime = data.frame(
-    levels = levels_accelTime,
-    mean   = (levels_accelTime - 6) * wtp_accelTime[1],
-    lower  = (levels_accelTime - 6) * wtp_accelTime[2],
-    upper  = (levels_accelTime - 6) * wtp_accelTime[3])
-df_powertrain = data.frame(
-    levels = levels_powertrain,
-    mean   = (levels_powertrain - 0) * wtp_powertrain[1],
-    lower  = (levels_powertrain - 0) * wtp_powertrain[2],
-    upper  = (levels_powertrain - 0) * wtp_powertrain[3])
+# Create data frames for plotting each attribute:
+#   level   = The attribute level (x-axis)
+#   utility = The utility associated with each level (y-axis)
+wtp$par         = row.names(wtp)
+wtp_fuelEconomy = wtp %>% filter(par == 'fuelEconomy')
+wtp_accelTime   = wtp %>% filter(par == 'accelTime')
+wtp_powertrain  = wtp %>% filter(par == 'powertrain_elec')
+df_fuelEconomy = data %>%
+    distinct(level = fuelEconomy) %>%
+    arrange(level) %>%
+    mutate(mean  = (level - min(level)) * wtp_fuelEconomy$mean,
+           lower = (level - min(level)) * wtp_fuelEconomy$lower,
+           upper = (level - min(level)) * wtp_fuelEconomy$upper)
+df_accelTime = data %>%
+    distinct(level = accelTime) %>%
+    arrange(level) %>%
+    mutate(mean  = (level - min(level)) * wtp_accelTime$mean,
+           lower = (level - min(level)) * wtp_accelTime$lower,
+           upper = (level - min(level)) * wtp_accelTime$upper)
+df_powertrain = data %>%
+    distinct(level = powertrain) %>%
+    mutate(mean  = c(wtp_powertrain$mean, 0),
+           lower = c(wtp_powertrain$lower, 0),
+           upper = c(wtp_powertrain$upper, 0))
 
 # Get y-axis upper and lower bounds (plots should have the same y-axis):
-df   = rbind(df_fuelEconomy, df_accelTime, df_powertrain)
-ymin = min(df$lower)
-ymax = max(df$upper)
+ymin = min(c(df_fuelEconomy$lower, df_accelTime$lower, df_powertrain$lower))
+ymax = max(c(df_fuelEconomy$upper, df_accelTime$upper, df_powertrain$upper))
 
 # Plot the WTP for each attribute with error bars for a 95% confidence interval
-plot_fuelEconomy = ggplot(data=df_fuelEconomy,
-    aes(x=levels, y=mean, ymin=lower, ymax=upper)) +
+plot_fuelEconomy = ggplot(df_fuelEconomy,
+    aes(x=level, y=mean, ymin=lower, ymax=upper)) +
     geom_line() +
     geom_ribbon(alpha=0.2) +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='Fuel Economy (mpg)', y='WTP ($1,000)') +
     theme_bw()
-plot_accelTime = ggplot(data=df_accelTime,
-    aes(x=levels, y=mean, ymin=lower, ymax=upper)) +
+plot_accelTime = ggplot(df_accelTime,
+    aes(x=level, y=mean, ymin=lower, ymax=upper)) +
     geom_line() +
     geom_ribbon(alpha=0.2) +
     scale_y_continuous(limits=c(ymin, ymax)) +
     labs(x='0-60mph Accel. Time (sec)', y='WTP ($1,000)') +
     theme_bw()
-plot_powertrain = ggplot(data=df_powertrain,
-    aes(x=levels, y=mean)) +
+plot_powertrain = ggplot(df_powertrain,
+    aes(x=level, y=mean)) +
     geom_point() +
     geom_errorbar(aes(ymin=lower, ymax=upper), width=0.3) +
     scale_y_continuous(limits=c(ymin, ymax)) +
