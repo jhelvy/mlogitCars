@@ -1,10 +1,10 @@
-# Install packages (only need to install once)
+# Install packages - only need to do this once!
 # install.packages('tidyverse')
 # install.packages('gridExtra')
 # install.packages('MASS')
 # install.packages('mlogit')
 
-# Load libraries
+# Load installed libraries - do this every time!
 library(tidyverse)
 library(gridExtra)
 library(mlogit)

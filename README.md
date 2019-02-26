@@ -1,11 +1,19 @@
 # mlogitCars
 
-This set of files contains a comprehensive example of estimating discrete choice models in `R` using the `mlogit` package. Simulated choice data (see the `0-simulateData.R` file) are used so that the true model parameters are known. The simulated data are stored in the `./data` folder.
+This set of files contains a comprehensive example of estimating multinomial logit models in `R` using the `mlogit` package.
 
-The `.R` files in this repository illustrate different examples. The following list provides a short description of each:
+Simulated choice data are used so that the true model parameters are known. The simulated data are stored in the `./data` folder. The following list provides a short description of the data files:
 
 |    File       |    Description    |
-|:--------------|:------------------|
+|:-----------------|:------------------|
+|`data_mnl.csv` | Simulated choice data using a multinomial logit model.|
+|`data_outsideGood.csv` | Similar data to the `data_mnl.csv` file, except this dataset include an "outside good" alternative (i.e. a "None" option in a conjoint survey).|
+|`sensitivityCases.csv` | Cases used in the sensitivity analyses (see the 7.3 and 7.4 examples in the `./code` folder).|
+
+The `.R` files in the `./code` folder illustrate different examples of models, plots, and analyses. The following list provides a short description of each file:
+
+|    File       |    Description    |
+|:-----------------|:------------------|
 |`0-simulateData.R`       | Simulate the choice data.|
 |`1-loadTools.R`          | Load functions & libraries.|
 |`2.1-partworth_model.R`  | Estimate a logit model with partworth parameters using `mlogit`.|
