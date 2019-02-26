@@ -1,5 +1,3 @@
-setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
-
 # -----------------------------------------------------------------------------
 # Functions for simulating SP data
 

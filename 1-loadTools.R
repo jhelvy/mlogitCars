@@ -1,5 +1,3 @@
-setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
-
 # Install packages (only need to install once)
 # install.packages('tidyverse')
 # install.packages('gridExtra')

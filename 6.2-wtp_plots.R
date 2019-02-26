@@ -1,5 +1,3 @@
-setwd('/Users/jhelvy/Documents/GitHub/mlogitCars')
-
 # Load libraries and functions
 source('./1-loadTools.R')
 
