@@ -29,8 +29,8 @@ The `.R` files in the `./code` folder illustrate different examples of models, p
 |`6.2-wtp_plots.R`| Plot the WTP results using `ggplot2`.|
 |`7.1-market_simulation.R`  | Compute the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares using simulation).|
 |`7.2-marketSimulation_plots.R`| Plot the market simulation results using `ggplot2`.|
-|`7.3-marketSimulation_sensitivity.R`| Sensitivity analysis of the market simulations.|
-|`7.4-marketSimulation_sensitivity_plots.R`| Make a 'tornado plot' of the market simulation sensitivity analysis using `ggplot2`.|
+|`8.1-marketSensitivity.R`| Conduct a sensitivity analysis of the market shares to changes in attribute values.|
+|`8.2-marketSensitivity_plots.R`| Plot results of the sensitivity analysis, including a 'tornado plot', using `ggplot2`.|
 
 # Author, Version, and License Information
 - Author: *John Paul Helveston* (www.jhelvy.com)

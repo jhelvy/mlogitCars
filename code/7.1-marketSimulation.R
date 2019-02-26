@@ -20,37 +20,15 @@ market = data.frame(
     accelTime       = c(8, 6, 7),
     powertrain_elec = c(0, 1, 0))
 
-# Make a function to compute the logit fraction (market shares)
-logitProbs = function(market, coefs) {
-    v     = as.matrix(market) %*% coefs
-    expV  = exp(v)
-    denom = sum(expV)
-    probs = as.vector(expV / denom)
-    return(probs)
-}
-
-# Compute the market shares
+# Use the logitProbs() function to compute the market shares
+# (see the './1-loadTools.R' file for details about 'logitProbs()'
 shares = logitProbs(market, coefs)
 shares
 
 # -----------------------------------------------------------------------------
 # Compute the market shares with uncertainty
 
-# This function takes draws of the estimated model coefficients using the
-# hessian at the solution. It then computes the market shares with each set of
-# draws and returns a mean result with a lower and upper bound from a 95%
-# confidence interval.
-simulateMarketShares = function(model, market, numDraws, alpha=0.025) {
-    # See './1-loadTools.R' file for details about the 'getCoefDraws()'
-    # and 'getCI()' functions.
-    coef_draws  = getCoefDraws(model, numDraws)
-    v_draws     = as.matrix(market) %*% t(coef_draws)
-    expV_draws  = exp(v_draws)
-    share_draws = apply(expV_draws, 2, function(x) {x / sum(x)})
-    result      = getCI(t(share_draws))
-    return(result)
-}
-
-# Compute the market shares with uncertainty
-shares = simulateMarketShares(model_linear, market, numDraws=10^4)
-shares
+# Use the logitProbsUnc() function to compute the market shares with uncertainty
+# (see the './1-loadTools.R' file for details about 'logitProbsUnc()'
+sharesUnc = logitProbsUnc(model_linear, market, numDraws=10^4)
+sharesUnc

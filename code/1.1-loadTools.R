@@ -65,3 +65,29 @@ getCI = function(df, alpha=0.025) {
     # return(df[c('par', 'mean', 'lower', 'upper')])
     return(df)
 }
+
+# -----------------------------------------------------------------------------
+# Functions for simulating market shares
+
+# Function that computes the logit fraction given a matrix of alternatives (X)
+# and estimated model coefficients 
+logitProbs = function(X, coefs) {
+    v     = as.matrix(X) %*% coefs
+    expV  = exp(v)
+    denom = sum(expV)
+    probs = as.vector(expV / denom)
+    return(probs)
+}
+
+# This function takes draws of the estimated model coefficients using the
+# hessian at the solution. It then computes the logit fraction with each set of
+# draws and returns a mean result with a lower and upper bound from a 95%
+# confidence interval.
+logitProbsUnc = function(model, X, numDraws, alpha=0.025) {
+    coef_draws  = getCoefDraws(model, numDraws)
+    v_draws     = as.matrix(X) %*% t(coef_draws)
+    expV_draws  = exp(v_draws)
+    probs_draws = apply(expV_draws, 2, function(x) {x / sum(x)})
+    result      = getCI(t(probs_draws))
+    return(result)
+}

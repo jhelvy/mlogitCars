@@ -5,10 +5,20 @@ source('./code/1.1-loadTools.R')
 source('./code/7.1-marketSimulation.R')
 
 # -----------------------------------------------------------------------------
-# Plot results
 
-shares$alt = seq(3)
-ggplot(data=shares,
+# Plot results 
+shares = as.data.frame(shares) %>%
+    mutate(alt = seq(n()))
+ggplot(shares,
+    aes(x=as.factor(alt), y=shares)) +
+    geom_bar(stat='identity') +
+    scale_y_continuous(limits=c(0, 1)) +
+    labs(x='Alternative', y='Market Share') +
+    theme_bw()
+
+# Plot results with uncertainty (error bars)
+sharesUnc$alt = seq(3)
+ggplot(sharesUnc,
     aes(x=as.factor(alt), y=mean)) +
     geom_bar(stat='identity') +
     geom_errorbar(aes(ymin=lower, ymax=upper), width=0.3) +

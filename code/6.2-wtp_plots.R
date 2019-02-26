@@ -5,7 +5,7 @@ source('./code/1.1-loadTools.R')
 source('./code/6.1-wtp.R')
 
 # -----------------------------------------------------------------------------
-# Plot results
+# Plot results (including uncertainty)
 
 # Create data frames for plotting each attribute:
 #   level   = The attribute level (x-axis)

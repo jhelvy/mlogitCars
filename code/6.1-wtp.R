@@ -12,8 +12,8 @@ coefs = coef(model_linear)
 coefs
 
 # Compute WTP:
-wtp = -1 * (coefs / coefs['price'])
-as.matrix(wtp)
+wtp = coefs / (-1*coefs['price'])
+wtp
 
 # -----------------------------------------------------------------------------
 # Compute the WTP with uncertainty
@@ -23,9 +23,7 @@ coef_draws = getCoefDraws(model_linear, numDraws = 10^4)
 head(coef_draws)
 
 # Compute WTP for each coefficient draw:
-numCols     = ncol(coef_draws)
-price_draws = matrix(rep(coef_draws$price, numCols), ncol=numCols)
-wtp_draws   = -1 * (coef_draws / price_draws)
+wtp_draws = -1*(coef_draws[,2:4] / coef_draws[,1])
 head(wtp_draws)
 
 # For each coefficient, get the mean and 95% confidence interval of WTP:
