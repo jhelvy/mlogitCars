@@ -64,5 +64,14 @@ plot_powertrain = ggplot(df_powertrain,
     theme_bw()
 
 # Plot all plots in one figure
-grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
-    nrow=1)
+multiplot = grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain, nrow=1)
+
+# Save plots 
+mainwd = getwd()
+setwd('./results/plots/coefficients')
+ggsave('./partworth_price.pdf', plot_price, width=4, height=3)
+ggsave('./partworth_fuelEconomy.pdf', plot_fuelEconomy, width=4, height=3)
+ggsave('./partworth_accelTime.pdf', plot_accelTime, width=4, height=3)
+ggsave('./partworth_powertrain.pdf', plot_powertrain, width=4, height=3)
+ggsave('./partworth_multiplot.pdf', multiplot, width=10, height=2.5)
+setwd(mainwd)

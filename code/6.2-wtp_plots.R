@@ -60,4 +60,13 @@ plot_powertrain = ggplot(df_powertrain,
     theme_bw()
 
 # Plot all plots in one figure
-grid.arrange(plot_fuelEconomy, plot_accelTime, plot_powertrain, nrow=1)
+multiplot = grid.arrange(plot_fuelEconomy, plot_accelTime, plot_powertrain, nrow=1)
+
+# Save plots 
+mainwd = getwd()
+setwd('./results/plots/wtp')
+ggsave('./wtp_fuelEconomy.pdf', plot_fuelEconomy, width=4, height=3)
+ggsave('./wtp_accelTime.pdf', plot_accelTime, width=4, height=3)
+ggsave('./wtp_powertrain.pdf', plot_powertrain, width=4, height=3)
+ggsave('./wtp_multiplot.pdf', multiplot, width=8, height=2.5)
+setwd(mainwd)

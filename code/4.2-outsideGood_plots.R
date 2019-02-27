@@ -75,5 +75,17 @@ plot_outsideGood = ggplot(df_outsideGood,
     theme_bw()
 
 # Plot all plots in one figure
-grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
+multiplot = grid.arrange(plot_price, plot_fuelEconomy, plot_accelTime, plot_powertrain,
     plot_outsideGood, nrow=1)
+
+# Save plots 
+mainwd = getwd()
+setwd('./results/plots/coefficients')
+ggsave('./og_price.pdf', plot_price, width=4, height=3)
+ggsave('./og_fuelEconomy.pdf', plot_fuelEconomy, width=4, height=3)
+ggsave('./og_accelTime.pdf', plot_accelTime, width=4, height=3)
+ggsave('./og_powertrain.pdf', plot_powertrain, width=4, height=3)
+ggsave('./og_outsideGood.pdf', plot_outsideGood, width=4, height=3)
+ggsave('./og_multiplot.pdf', multiplot, width=10, height=2.5)
+setwd(mainwd)
+

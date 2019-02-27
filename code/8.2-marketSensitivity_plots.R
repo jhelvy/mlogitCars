@@ -15,25 +15,23 @@ share_price_plot = ggplot(cases_price_unc,
     scale_y_continuous(limits=c(0, 1)) +
     labs(x='Price ($1,000)', y='Market Share') +
     theme_bw()
-share_price_plot
 
 # -----------------------------------------------------------------------------
 # Make a line plot of the revenue sensitivity to price (with uncertainty)
 
-marketSize = 10^4
+marketSize = 1000
 rev_price_plot = cases_price_unc %>%
     mutate(
-        rev_mean = price*marketSize*share_mean,
-        rev_low  = price*marketSize*share_low,
-        rev_high = price*marketSize*share_high) %>%
+        rev_mean = price*marketSize*share_mean / 10^3, # Convert to millions
+        rev_low  = price*marketSize*share_low / 10^3,
+        rev_high = price*marketSize*share_high / 10^3) %>%
     ggplot(
     aes(x=price, y=rev_mean, ymin=rev_low, ymax=rev_high)) +
     geom_line() +
     geom_ribbon(alpha=0.2) +
     scale_x_continuous(breaks=seq(10, 20, 2)) +
-    labs(x='Price ($1,000)', y='Market Share') +
+    labs(x='Price ($ Thousand)', y='Revenue ($ Million)') +
     theme_bw()
-rev_price_plot
 
 # -----------------------------------------------------------------------------
 # Make a tornado diagram to show market sensitivity to all attributes
@@ -47,7 +45,7 @@ cases_all = cases_all %>%
     # "Center" the shares around the baseline result (so baseline is at 0)
     mutate(share = share - shareBaseline) %>%
     # Rename variables for prettier plotting
-    mutate(var = fct_recode(attribute,
+    mutate(attribute = fct_recode(attribute,
         'Price ($1,000)'             = 'price',
         'Fuel Economy (mpg)'         = 'fuelEconomy',
         '0-60 mph Acceleration Time' = 'accelTime',
@@ -59,7 +57,7 @@ cases_all = cases_all %>%
 # Compute labels for market share
 lb        = floor(10*min(cases_all$share))/10
 ub        = ceiling(10*max(cases_all$share))/10
-breaks    = seq(lb, ub, (ub - lb) / 5)
+breaks    = seq(lb, ub, (ub - lb) / 5)    
 breakLabs = round(breaks + shareBaseline, 2)
 
 # Make the tornado diagram
@@ -76,4 +74,11 @@ tornado_plot = ggplot(cases_all,
     # Remove legend
     theme(legend.position='none') +
     coord_flip()
-tornado_plot
+
+# Save plots 
+mainwd = getwd()
+setwd('./results/plots/marketSims')
+ggsave('./sens_share_price.pdf', share_price_plot, width=4, height=3)
+ggsave('./sens_rev_price.pdf', rev_price_plot, width=4, height=3)
+ggsave('./sens_tornado.pdf', tornado_plot, width=6, height=3)
+setwd(mainwd)
