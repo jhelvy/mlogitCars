@@ -41,8 +41,9 @@ rev_price_plot = cases_price_unc %>%
 shares = logitProbs(marketBaseline, coefs)
 shareBaseline = shares[1]
 
+# Format sensitivity case results for plotting
 cases_all = cases_all %>%
-    # "Center" the shares around the baseline result (so baseline is at 0)
+    # "Center" the shares around the baseline result 
     mutate(share = share - shareBaseline) %>%
     # Rename variables for prettier plotting
     mutate(attribute = fct_recode(attribute,
@@ -50,26 +51,28 @@ cases_all = cases_all %>%
         'Fuel Economy (mpg)'         = 'fuelEconomy',
         '0-60 mph Acceleration Time' = 'accelTime',
         'Electric Powertrain'        = 'powertrain_elec')) %>%
-    # Compute the range in change from low to high levels for sorting
+    # Compute the range in market share from low to high levels for sorting
     group_by(attribute) %>%
     mutate(shareRange = sum(abs(share)))
 
 # Compute labels for market share
-lb        = floor(10*min(cases_all$share))/10
-ub        = ceiling(10*max(cases_all$share))/10
-breaks    = seq(lb, ub, (ub - lb) / 5)    
-breakLabs = round(breaks + shareBaseline, 2)
+lowerBound = floor(10*min(cases_all$share))/10
+upperBound = ceiling(10*max(cases_all$share))/10
+breaks     = seq(lowerBound, upperBound, (upperBound - lowerBound) / 5)    
+breakLabs  = round(breaks + shareBaseline, 2)
 
 # Make the tornado diagram
 tornado_plot = ggplot(cases_all,
     # Use 'fct_reorder' to order the variables according to shareRange
     aes(x=fct_reorder(attribute, shareRange), y=share, fill=level)) +
     geom_bar(stat='identity', width=0.6) +
-    # Add labels on bars
+    # Add labels at end of bars
     geom_text(aes(label=value), vjust=0.5) +
-    scale_y_continuous(limits=c(lb, ub), breaks=breaks, labels=breakLabs) +
-    labs(x='Attribute',
-         y='Market Share') +
+    # Set axis breaks
+    scale_y_continuous(limits=c(lowerBound, upperBound), 
+                       breaks=breaks, labels=breakLabs) +
+    # Modify labels and theme
+    labs(x='Attribute', y='Market Share') +
     theme_bw() +
     # Remove legend
     theme(legend.position='none') +
