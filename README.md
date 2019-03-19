@@ -27,6 +27,7 @@ The `.R` files in the `./code` folder illustrate different examples of models, p
 |`5.2-uncertainty_plots.R`| Plot the coefficients (with uncertainty) using `ggplot2`.|
 |`6.1-wtp.R`                | Compute the willingness to pay from the linear model (both point estimates and a 95% confidence interval using simulation).|
 |`6.2-wtp_plots.R`| Plot the WTP results using `ggplot2`.|
+|`6.3-wtp_logitr.R`| Directly estimate WTP using the [`logitr`](https://github.com/jhelvy/logitr) package.|
 |`7.1-market_simulation.R`  | Compute the expected market shares for a set of alternatives using coefficients from the linear model (both point estimates and 95% confidence intervals of the shares using simulation).|
 |`7.2-marketSimulation_plots.R`| Plot the market simulation results using `ggplot2`.|
 |`8.1-marketSensitivity.R`| Conduct a sensitivity analysis of the market shares to changes in attribute values.|
