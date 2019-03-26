@@ -7,10 +7,6 @@ source('./code/3.1-linear_model.R')
 # -----------------------------------------------------------------------------
 # Compute the market shares of a given market
 
-# Get the model coefficients:
-coefs = coef(model_linear)
-coefs
-
 # Create a set of alternatives for which to simulate shares:
 # Columns are attributes: price, fuelEconomy, accelTime, and powertrain_elec
 # Each row is an alternative
@@ -22,7 +18,7 @@ market = data.frame(
 
 # Use the logitProbs() function to compute the market shares
 # (see the './1-loadTools.R' file for details about 'logitProbs()'
-shares = logitProbs(market, coefs)
+shares = logitProbs(model_linear, market)
 shares
 
 # -----------------------------------------------------------------------------

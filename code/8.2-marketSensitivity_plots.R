@@ -38,7 +38,7 @@ rev_price_plot = cases_price_unc %>%
 
 # Get baseline simulation results 
 # (defined in './8.1-marketSensitivity.R')
-shares = logitProbs(marketBaseline, coefs)
+shares = logitProbs(model_linear, marketBaseline)
 shareBaseline = shares[1]
 
 # Format sensitivity case results for plotting

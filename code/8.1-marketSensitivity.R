@@ -1,9 +1,3 @@
-# Load libraries and functions
-source('./code/1.1-loadTools.R')
-
-# Load the market simulation results:
-source('./code/3.1-linear_model.R')
-
 # -----------------------------------------------------------------------------
 # Sensitivity Analysis:
 
@@ -12,8 +6,11 @@ source('./code/3.1-linear_model.R')
 # the effect of changing values of the FIRST alternative in a market on its 
 # market share.
 
-# Use the coefficients from the linear model: 
-coefs = coef(model_linear)
+# Load libraries and functions
+source('./code/1.1-loadTools.R')
+
+# Load the market simulation results:
+source('./code/3.1-linear_model.R')
 
 # -----------------------------------------------------------------------------
 # Sensitivity of market share to changes in price
@@ -40,7 +37,7 @@ for (i in 1:nrow(cases_price)) {
     market$price[1] = cases_price$price[i]
     # Compute the market shares using logitProbs()
     # (see the './1-loadTools.R' file for details about 'logitProbs()')
-    share = logitProbs(market, coefs)[1]
+    share = logitProbs(model_linear, market)[1]
     cases_price$share[i] = share
 }
 cases_price
@@ -60,8 +57,6 @@ cases_price_unc
 for (i in 1:nrow(cases_price_unc)) {
     market = marketBaseline
     market$price[1] = cases_price$price[i]
-    # Compute the market shares using logitProbsUnc()
-    # (see the './1-loadTools.R' file)
     shareDf = logitProbsUnc(model_linear, market, numDraws=10^4)
     cases_price_unc[i,2:4] = shareDf[1,]
 }
@@ -81,7 +76,7 @@ cases_all
 for (i in 1:nrow(cases_all)) {
     market = marketBaseline
     market[cases_all$attribute[i]][1,] = cases_all$value[i]
-    share = logitProbs(market, coefs)[1]
+    share = logitProbs(model_linear, market)[1]
     cases_all$share[i] = as.numeric(share)
 }
 cases_all

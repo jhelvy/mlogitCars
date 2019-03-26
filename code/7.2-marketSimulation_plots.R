@@ -18,10 +18,10 @@ baseline = ggplot(shares,
 
 # Plot results with uncertainty (error bars)
 sharesUnc$alt = seq(3)
-baseline_unc = ggplot(sharesUnc,
-    aes(x=as.factor(alt), y=mean)) +
+baselineUnc = ggplot(sharesUnc,
+    aes(x=as.factor(alt), y=mean, ymin=lower, ymax=upper)) +
     geom_bar(stat='identity') +
-    geom_errorbar(aes(ymin=lower, ymax=upper), width=0.3) +
+    geom_errorbar(width=0.3) +
     scale_y_continuous(limits=c(0, 1)) +
     labs(x='Alternative', y='Market Share') +
     theme_bw()
@@ -30,5 +30,5 @@ baseline_unc = ggplot(sharesUnc,
 mainwd = getwd()
 setwd('./results/plots/marketSims')
 ggsave('./baseline.pdf', baseline, width=4, height=3)
-ggsave('./baseline_unc.pdf', baseline_unc, width=4, height=3)
+ggsave('./baselineUnc.pdf', baselineUnc, width=4, height=3)
 setwd(mainwd)

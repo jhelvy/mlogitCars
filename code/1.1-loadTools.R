@@ -49,8 +49,10 @@ dummyCode = function(df, varNames) {
 # Returns multivariate normal draws of the coefficients of a model estimated
 # using the mlogit package
 getCoefDraws = function(model, numDraws) {
-    varcov = abs(solve(as.matrix(model$hessian)))
-    draws  = data.frame(mvrnorm(numDraws, model$coef, varcov))
+    coefs      = coef(model)
+    hessian    = as.matrix(model$hessian)
+    covariance = -1*(solve(hessian))
+    draws      = as.data.frame(mvrnorm(numDraws, coefs, covariance))
     return(draws)
 }
 
@@ -60,9 +62,6 @@ getCI = function(df, alpha=0.025) {
         mean  = apply(df, 2, mean, na.rm=T), 
         lower = apply(df, 2, function(x) {quantile(x, alpha, na.rm=T)}), 
         upper = apply(df, 2, function(x) {quantile(x, 1-alpha, na.rm=T)}))
-    # df$par = row.names(df)
-    # row.names(df) = seq(nrow(df))
-    # return(df[c('par', 'mean', 'lower', 'upper')])
     return(df)
 }
 
@@ -70,8 +69,9 @@ getCI = function(df, alpha=0.025) {
 # Functions for simulating market shares
 
 # Function that computes the logit fraction given a matrix of alternatives (X)
-# and estimated model coefficients 
-logitProbs = function(X, coefs) {
+# and an estimated model
+logitProbs = function(model, X) {
+    coefs = coef(model)
     v     = as.matrix(X) %*% coefs
     expV  = exp(v)
     denom = sum(expV)
@@ -83,7 +83,7 @@ logitProbs = function(X, coefs) {
 # hessian at the solution. It then computes the logit fraction with each set of
 # draws and returns a mean result with a lower and upper bound from a 95%
 # confidence interval.
-logitProbsUnc = function(model, X, numDraws, alpha=0.025) {
+logitProbsUnc = function(model, X, numDraws=10^4, alpha=0.025) {
     coef_draws  = getCoefDraws(model, numDraws)
     v_draws     = as.matrix(X) %*% t(coef_draws)
     expV_draws  = exp(v_draws)
