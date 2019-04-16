@@ -56,7 +56,7 @@ cases_price_unc
 # Run the simulation for each case
 for (i in 1:nrow(cases_price_unc)) {
     market = marketBaseline
-    market$price[1] = cases_price$price[i]
+    market$price[1] = cases_price_unc$price[i]
     shareDf = logitProbsUnc(model_linear, market, numDraws=10^4)
     cases_price_unc[i,2:4] = shareDf[1,]
 }

@@ -74,63 +74,46 @@ data_mnl = simulateExperiment(
     numObs  = 5000,
     numResp = 500,  # 10 questions per respondent
     numAlts = 3)
+data_mnl_2groups = data_mnl
 data_outsideGood = addOutsideGood(data_mnl)
 
-# Simulate choices
+# Set parameters 
 pars_mnl = c(
     price       = -0.7,
     fuelEconomy = 0.1,
     accelTime   = -0.2,
     elec        = -4.0)
-pars_outsideGood        = c(pars_mnl, outsideGood = -15.0)
+pars_mnl_2groups = c(
+    price       = -0.6,
+    fuelEconomy = 0.15,
+    accelTime   = -0.3,
+    elec        = -1.0)
+pars_outsideGood = c(pars_mnl, outsideGood = -15.0)
+
+# Simulate choices
 data_mnl$choice         = simulateChoices(data_mnl, pars_mnl)
+data_mnl_2groups$choice = simulateChoices(data_mnl_2groups, pars_mnl_2groups)
 data_outsideGood$choice = simulateChoices(data_outsideGood, pars_outsideGood)
 
 # Format powertrain variable
 data_mnl$powertrain         = ifelse(data_mnl$elec == 1, 'elec', 'gas')
+data_mnl_2groups$powertrain  = ifelse(data_mnl_2groups$elec == 1, 'elec', 'gas')
 data_outsideGood$powertrain = ifelse(data_outsideGood$elec == 1, 'elec', 'gas')
 
+# Update names
 varNames = c('respID', 'obsID', 'alt', 'choice', 'price', 'fuelEconomy',
              'accelTime', 'powertrain')
-
 data_mnl         = data_mnl[varNames]
+data_mnl_2groups  = data_mnl_2groups[varNames]
 data_outsideGood = data_outsideGood[c(varNames, 'outsideGood')]
+
+# Add second group for 2-groups data set 
+data_mnl_2groups$group = 'B' 
+temp = data_mnl
+temp$group = 'A'
+data_mnl_2groups = rbind(temp, data_mnl_2groups)
+
+# Save data
 write.csv(data_mnl, './data/data_mnl.csv', row.names=F)
+write.csv(data_mnl_2groups, './data/data_mnl_2groups.csv', row.names=F)
 write.csv(data_outsideGood, './data/data_outsideGood.csv', row.names=F)
-
-# # -----------------------------------------------------------------------------
-# # Preview predicted shares based on data and parameters:
-# source('./1-loadTools.R')
-
-# # MNL data:
-# data       = read.csv('./data/data_mnl.csv', header=T)
-# data       = dummyCode(data, varNames = 'powertrain')
-# data$elec  = data$powertrain_elec
-# pars       = pars_mnl
-# X          = as.matrix(data[names(pars)])
-# data$V     = as.numeric(X %*% pars)
-# data$share = as.numeric(round(100*getMnlLogit(data$V, data$obsID), 2))
-# head(data, 20)
-
-# data %>% group_by(price) %>% summarise(mean(share))
-# data %>% group_by(fuelEconomy) %>% summarise(mean(share))
-# data %>% group_by(accelTime) %>% summarise(mean(share))
-# data %>% group_by(elec) %>% summarise(mean(share))
-
-# # Outside good data:
-# source('./1-loadTools.R')
-# data       = read.csv('./data/data_outsideGood.csv', header=T)
-# data       = dummyCode(data, varNames = 'powertrain')
-# data$elec  = data$powertrain_elec
-# pars       = pars_outsideGood
-# X          = as.matrix(data[names(pars)])
-# data$V     = as.numeric(X %*% pars)
-# data$share = as.numeric(round(100*getMnlLogit(data$V, data$obsID), 2))
-# head(data, 20)
-
-# data %>% group_by(price) %>% summarise(mean(share))
-# data %>% group_by(fuelEconomy) %>% summarise(mean(share))
-# data %>% group_by(accelTime) %>% summarise(mean(share))
-# data %>% group_by(elec) %>% summarise(mean(share))
-# data %>% group_by(outsideGood) %>% summarise(mean(share))
-

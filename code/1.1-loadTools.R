@@ -48,7 +48,7 @@ dummyCode = function(df, varNames) {
 
 # Returns multivariate normal draws of the coefficients of a model estimated
 # using the mlogit package
-getCoefDraws = function(model, numDraws) {
+getCoefDraws = function(model, numDraws=10^5) {
     coefs      = coef(model)
     hessian    = as.matrix(model$hessian)
     covariance = -1*(solve(hessian))
@@ -79,15 +79,26 @@ logitProbs = function(model, X) {
     return(probs)
 }
 
-# This function takes draws of the estimated model coefficients using the
+# This function computes draws of the estimated model coefficients using the
 # hessian at the solution. It then computes the logit fraction with each set of
 # draws and returns a mean result with a lower and upper bound from a 95%
 # confidence interval.
-logitProbsUnc = function(model, X, numDraws=10^4, alpha=0.025) {
+logitProbsUnc = function(model, X, numDraws=10^5, alpha=0.025) {
     coef_draws  = getCoefDraws(model, numDraws)
     v_draws     = as.matrix(X) %*% t(coef_draws)
     expV_draws  = exp(v_draws)
     probs_draws = apply(expV_draws, 2, function(x) {x / sum(x)})
-    result      = getCI(t(probs_draws))
+    result      = getCI(t(probs_draws), alpha)
+    return(result)
+}
+
+# This function takes draws of estimated model coefficients and computes the 
+# logit fraction with each set of draws and returns a mean result with a 
+# lower and upper bound from a 95% confidence interval.
+logitProbsDraws = function(coef_draws, X, alpha=0.025) {
+    v_draws     = as.matrix(X) %*% t(coef_draws)
+    expV_draws  = exp(v_draws)
+    probs_draws = apply(expV_draws, 2, function(x) {x / sum(x)})
+    result      = getCI(t(probs_draws), alpha)
     return(result)
 }
