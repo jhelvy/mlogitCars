@@ -32,6 +32,7 @@ The `.R` files in the `./code` folder illustrate different examples of models, p
 |`7.2-marketSimulation_plots.R`| Plot the market simulation results using `ggplot2`.|
 |`8.1-marketSensitivity.R`| Conduct a sensitivity analysis of the market shares to changes in attribute values.|
 |`8.2-marketSensitivity_plots.R`| Plot results of the sensitivity analysis, including a 'tornado plot', using `ggplot2`.|
+|`9.1-two_groups.R`| Full example analysis of two known groups that have distinct, different preferences.|
 
 # Author, Version, and License Information
 - Author: *John Paul Helveston* (www.jhelvy.com)
