@@ -19,23 +19,23 @@ options(dplyr.width = Inf)
 # -----------------------------------------------------------------------------
 # Functions for preparing the data
 
-dummyCode = function(df, varNames) {
+dummyCode = function(df, vars) {
     df = as.data.frame(df)
-    nonVarNames = colnames(df)[which(! colnames(df) %in% varNames)]
+    nonVars = colnames(df)[which(! colnames(df) %in% vars)]
     # Keep the original variables and the order to restore later after merging
     df$order = seq(nrow(df))
-    for (i in 1:length(varNames)) {
-        varName  = varNames[i]
-        colIndex = which(colnames(df) == varName)
+    for (i in 1:length(vars)) {
+        var      = vars[i]
+        colIndex = which(colnames(df) == var)
         levels   = sort(unique(df[,colIndex]))
         mergeMat = as.data.frame(diag(length(levels)))
         mergeMat = cbind(levels, mergeMat)
-        colnames(mergeMat) = c(varName, paste(varName, levels, sep='_'))
+        colnames(mergeMat) = c(var, paste(var, levels, sep='_'))
         df = merge(df, mergeMat)
     }
     # Restore the original column order
-    new = colnames(df)[which(! colnames(df) %in% c(varNames, nonVarNames))]
-    df = df[c(nonVarNames, varNames, new)]
+    new = colnames(df)[which(! colnames(df) %in% c(vars, nonVars))]
+    df = df[c(nonVars, vars, new)]
     # Restore the original row order
     df = df[order(df$order),]
     row.names(df) = df$order
@@ -59,8 +59,8 @@ getCoefDraws = function(model, numDraws=10^5) {
 # Returns a confidence interval from a vector of values
 getCI = function(df, alpha=0.025) {
     df = data.frame(
-        mean  = apply(df, 2, mean, na.rm=T), 
-        lower = apply(df, 2, function(x) {quantile(x, alpha, na.rm=T)}), 
+        mean  = apply(df, 2, mean, na.rm=T),
+        lower = apply(df, 2, function(x) {quantile(x, alpha, na.rm=T)}),
         upper = apply(df, 2, function(x) {quantile(x, 1-alpha, na.rm=T)}))
     return(df)
 }
@@ -92,8 +92,8 @@ logitProbsUnc = function(model, X, numDraws=10^5, alpha=0.025) {
     return(result)
 }
 
-# This function takes draws of estimated model coefficients and computes the 
-# logit fraction with each set of draws and returns a mean result with a 
+# This function takes draws of estimated model coefficients and computes the
+# logit fraction with each set of draws and returns a mean result with a
 # lower and upper bound from a 95% confidence interval.
 logitProbsDraws = function(coef_draws, X, alpha=0.025) {
     v_draws     = as.matrix(X) %*% t(coef_draws)
